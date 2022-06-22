@@ -12,25 +12,25 @@ var (
 	errNegativeQueueSize  = errors.New("worker request queue size can not be negative")
 )
 
-type Pond struct {
-	Workers map[string]innerWorker
+type Pond[T any, E any] struct {
+	Workers map[string]innerWorker[T, E]
 }
 
-func NewPond() *Pond {
-	return &Pond{
-		Workers: make(map[string]innerWorker),
+func NewPond[T any, E any]() *Pond[T, E] {
+	return &Pond[T, E]{
+		Workers: make(map[string]innerWorker[T, E]),
 	}
 }
 
-func (p *Pond) RegisterWorker(id string, worker Worker) error {
+func (p *Pond[T, E]) RegisterWorker(id string, worker Worker[T, E]) error {
 	if err := worker.Validate(); err != nil {
 		return err
 	}
 
-	innerWorker := innerWorker{
+	innerWorker := innerWorker[T, E]{
 		Worker:      worker,
-		ResultChan:  make(chan any, worker.QueueSize),
-		RequestChan: make(chan any, worker.QueueSize),
+		ResultChan:  make(chan *E, worker.QueueSize),
+		RequestChan: make(chan T, worker.QueueSize),
 		Semaphore:   semaphore.NewWeighted(worker.ConcurrentCount),
 	}
 
@@ -41,7 +41,7 @@ func (p *Pond) RegisterWorker(id string, worker Worker) error {
 	return nil
 }
 
-func (p *Pond) AddWork(workerID string, request any) (chan any, error) {
+func (p *Pond[T, E]) AddWork(workerID string, request T) (chan *E, error) {
 	worker, ok := p.Workers[workerID]
 	if !ok {
 		return nil, errWorkerNotFound
@@ -53,7 +53,7 @@ func (p *Pond) AddWork(workerID string, request any) (chan any, error) {
 	return worker.ResultChan, nil
 }
 
-func (p Pond) ResultChan(workerID string) chan any {
+func (p Pond[T, E]) ResultChan(workerID string) chan *E {
 	worker, ok := p.Workers[workerID]
 
 	if ok {
@@ -63,7 +63,7 @@ func (p Pond) ResultChan(workerID string) chan any {
 	return nil
 }
 
-func (p *Pond) manageWorker(worker innerWorker) {
+func (p *Pond[T, E]) manageWorker(worker innerWorker[T, E]) {
 	for request := range worker.RequestChan {
 		worker.Acquire()
 

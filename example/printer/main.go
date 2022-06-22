@@ -8,12 +8,12 @@ import (
 )
 
 func main() {
-	pond := koi.NewPond()
+	pond := koi.NewPond[int, int]()
 
-	printWorker := koi.Worker{
+	printWorker := koi.Worker[int, int]{
 		ConcurrentCount: 2,
 		QueueSize:       10,
-		Work: func(a any) any {
+		Work: func(a int) *int {
 			time.Sleep(1 * time.Second)
 			log.Println(a)
 

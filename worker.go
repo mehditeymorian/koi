@@ -7,39 +7,39 @@ import (
 	"golang.org/x/sync/semaphore"
 )
 
-type Worker struct {
+type Worker[T any, E any] struct {
 	QueueSize       int
 	ConcurrentCount int64
-	Work            func(any) any
+	Work            func(T) *E
 }
 
-type innerWorker struct {
-	Worker
-	ResultChan  chan any
-	RequestChan chan any
+type innerWorker[T any, E any] struct {
+	Worker      Worker[T, E]
+	ResultChan  chan *E
+	RequestChan chan T
 	Semaphore   *semaphore.Weighted
 }
 
-func (i *innerWorker) work(request any) {
+func (i *innerWorker[T, E]) work(request T) {
 	defer i.Release()
 
-	if result := i.Work(request); result != nil {
+	if result := i.Worker.Work(request); result != nil {
 		i.ResultChan <- result
 	}
 }
 
-func (i *innerWorker) Acquire() {
+func (i *innerWorker[T, E]) Acquire() {
 	err := i.Semaphore.Acquire(context.Background(), 1)
 	if err != nil {
 		log.Println("failed to acquire lock")
 	}
 }
 
-func (i *innerWorker) Release() {
+func (i *innerWorker[T, E]) Release() {
 	i.Semaphore.Release(1)
 }
 
-func (w Worker) Validate() error {
+func (w Worker[T, E]) Validate() error {
 	if w.ConcurrentCount < 1 {
 		return errMinConcurrentCount
 	}
