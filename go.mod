@@ -1,4 +1,4 @@
-module github.com/mehditeymorian/koi
+module github.com/mehditeymorian/koi/v2
 
 go 1.18
 
