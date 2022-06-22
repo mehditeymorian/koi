@@ -24,7 +24,7 @@ func main() {
 	_ = pond.RegisterWorker("printer", printWorker)
 
 	for i := 0; i < 10; i++ {
-		_, err := pond.AddJob("printer", i)
+		_, err := pond.AddWork("printer", i)
 		if err != nil {
 			log.Printf("error while adding job: %v\n", err)
 		}

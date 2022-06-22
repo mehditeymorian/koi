@@ -41,7 +41,7 @@ func (p *Pond) RegisterWorker(id string, worker Worker) error {
 	return nil
 }
 
-func (p *Pond) AddJob(workerID string, request any) (chan any, error) {
+func (p *Pond) AddWork(workerID string, request any) (chan any, error) {
 	worker, ok := p.Workers[workerID]
 	if !ok {
 		return nil, errWorkerNotFound
@@ -67,6 +67,6 @@ func (p *Pond) manageWorker(worker innerWorker) {
 	for request := range worker.RequestChan {
 		worker.Acquire()
 
-		go worker.job(request)
+		go worker.work(request)
 	}
 }

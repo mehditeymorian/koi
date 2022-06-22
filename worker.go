@@ -20,7 +20,7 @@ type innerWorker struct {
 	Semaphore   *semaphore.Weighted
 }
 
-func (i *innerWorker) job(request any) {
+func (i *innerWorker) work(request any) {
 	defer i.Release()
 
 	if result := i.Work(request); result != nil {
