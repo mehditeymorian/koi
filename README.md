@@ -28,7 +28,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/mehditeymorian/koi"
+	"github.com/mehditeymorian/koi/v2"
 )
 
 func main() {
