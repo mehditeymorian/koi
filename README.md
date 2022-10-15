@@ -38,7 +38,7 @@ err = pond.RegisterWorker("workerID", worker)
 
 // add job to worker
 // this is non-blocking unless the queue is full.
-resultChan, err := pond.AddJob("workerID", requestData)
+resultChan, err := pond.AddWork("workerID", requestData)
 
 // read results from worker
 for res := range resultChan {
