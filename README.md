@@ -53,5 +53,5 @@ for res := range resultChan {
 - **Pond**: an area of water smaller than a lake, often artificially made.
 
 # Generic Version of KOI
-- [Generic KOI](https://github.com/1995parham/koi)
+- [Generic KOI](https://github.com/1995parham/koi) written by [Parham](https://github.com/1995parham)
 
