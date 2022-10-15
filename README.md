@@ -52,3 +52,6 @@ for res := range resultChan {
 - **Koi**: Koi is an informal name for the colored variants of C. rubrofuscus kept for ornamental purposes.
 - **Pond**: an area of water smaller than a lake, often artificially made.
 
+# Generic Version of KOI
+- [Generic KOI](https://github.com/1995parham/koi)
+
